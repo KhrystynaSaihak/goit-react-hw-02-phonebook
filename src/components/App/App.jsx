@@ -1,6 +1,11 @@
 import React from 'react';
 import { Component } from 'react';
 import uuid from 'react-uuid';
+import {
+  NotificationContainer,
+  NotificationManager,
+} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 import { Section } from 'components/Section/Section';
 import { DataInputForm } from 'components/DataInputForm/DataInputForm';
@@ -18,7 +23,22 @@ export class App extends Component {
     filter: '',
   };
 
+  compareContacts = nameVal => {
+    const matches = this.state.contacts.filter(
+      ({ name }) => !nameVal.toLowerCase().localeCompare(name.toLowerCase())
+    );
+    return matches;
+  };
+
   submitName = ({ name, number, filter }, actions) => {
+    const matches = this.compareContacts(name);
+    const isPassedTest = !matches.length;
+    if (!isPassedTest) {
+      NotificationManager.warning(
+        'Сontact with name ' + matches[0].name + ' already saved'
+      );
+      return;
+    }
     this.setState(prevState => ({
       contacts: [
         ...prevState.contacts,
@@ -31,6 +51,15 @@ export class App extends Component {
       ],
     }));
     actions.resetForm();
+  };
+
+  deleteName = nameVal => {
+    const newContactsList = this.state.contacts.filter(({ name }) => {
+      if (nameVal.toLowerCase().localeCompare(name.toLowerCase()) !== 0) {
+        return true;
+      }
+    });
+    this.setState({ contacts: newContactsList });
   };
 
   handleChange = e => {
@@ -47,8 +76,13 @@ export class App extends Component {
 
         <Section title="Contacts">
           <Filter handleChange={this.handleChange}></Filter>
-          <Contacts contactList={contacts} query={filter}></Contacts>
+          <Contacts
+            contactList={contacts}
+            query={filter}
+            deleteName={this.deleteName}
+          ></Contacts>
         </Section>
+        <NotificationContainer />
       </>
     );
   }

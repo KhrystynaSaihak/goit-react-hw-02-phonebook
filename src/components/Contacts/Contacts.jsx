@@ -1,25 +1,34 @@
 import PropTypes from 'prop-types';
-import { List, ListItem } from './Contacts.styled';
+import { List, ListItem, Btn } from './Contacts.styled';
 
-export const Contacts = ({ contactList, query }) => {
-  if (query.length) {
-    return (
-      <>
-        <List>
-          {contactList.map(({ name, number, id }) => {
-            if (name.toLowerCase().includes(query.toLowerCase())) {
-              return (
-                <ListItem key={id}>
+export const Contacts = ({ contactList, query, deleteName }) => {
+  return (
+    <>
+      <List>
+        {contactList.map(({ name, number, id }) => {
+          if (name.toLowerCase().includes(query.toLowerCase())) {
+            return (
+              <ListItem key={id}>
+                <span>
                   {name}, {number}
-                </ListItem>
-              );
-            }
-            return null;
-          })}
-        </List>
-      </>
-    );
-  }
+                </span>
+
+                <Btn
+                  type="button"
+                  onClick={() => {
+                    deleteName(name);
+                  }}
+                >
+                  Delete
+                </Btn>
+              </ListItem>
+            );
+          }
+          return null;
+        })}
+      </List>
+    </>
+  );
 };
 Contacts.propTypes = {
   contactList: PropTypes.arrayOf(
