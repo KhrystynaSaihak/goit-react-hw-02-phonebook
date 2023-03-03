@@ -58,6 +58,7 @@ export class App extends Component {
       if (nameVal.toLowerCase().localeCompare(name.toLowerCase()) !== 0) {
         return true;
       }
+      return false;
     });
     this.setState({ contacts: newContactsList });
   };
@@ -68,6 +69,7 @@ export class App extends Component {
 
   render() {
     const { contacts, filter } = this.state;
+    const normalizedfilter = filter.toLowerCase();
     return (
       <>
         <Section title="Phonebook">
@@ -78,7 +80,7 @@ export class App extends Component {
           <Filter handleChange={this.handleChange}></Filter>
           <Contacts
             contactList={contacts}
-            query={filter}
+            query={normalizedfilter}
             deleteName={this.deleteName}
           ></Contacts>
         </Section>

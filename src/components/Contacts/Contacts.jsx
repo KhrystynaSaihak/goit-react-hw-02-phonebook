@@ -6,7 +6,7 @@ export const Contacts = ({ contactList, query, deleteName }) => {
     <>
       <List>
         {contactList.map(({ name, number, id }) => {
-          if (name.toLowerCase().includes(query.toLowerCase())) {
+          if (name.toLowerCase().includes(query)) {
             return (
               <ListItem key={id}>
                 <span>
