@@ -24,17 +24,15 @@ export class App extends Component {
   };
 
   compareContacts = nameVal => {
-    const matches = this.state.contacts.find(
+    return this.state.contacts.find(
       ({ name }) => !nameVal.toLowerCase().localeCompare(name.toLowerCase())
     );
-    return matches ? matches : null;
   };
 
   filterContacts = () => {
-    const matches = this.state.contacts.filter(({ name }) =>
+    return this.state.contacts.filter(({ name }) =>
       name.toLowerCase().includes(this.state.filter.toLowerCase())
     );
-    return matches;
   };
 
   submitName = ({ name, number, filter }, actions) => {
@@ -60,10 +58,9 @@ export class App extends Component {
   };
 
   deleteName = deletedId => {
-    const newContactsList = this.state.contacts.filter(
-      ({ id }) => deletedId !== id
-    );
-    this.setState({ contacts: newContactsList });
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== deletedId),
+    }));
   };
 
   handleChange = e => {
