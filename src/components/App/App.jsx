@@ -24,18 +24,24 @@ export class App extends Component {
   };
 
   compareContacts = nameVal => {
-    const matches = this.state.contacts.filter(
+    const matches = this.state.contacts.find(
       ({ name }) => !nameVal.toLowerCase().localeCompare(name.toLowerCase())
+    );
+    return matches ? matches : null;
+  };
+
+  filterContacts = () => {
+    const matches = this.state.contacts.filter(({ name }) =>
+      name.toLowerCase().includes(this.state.filter.toLowerCase())
     );
     return matches;
   };
 
   submitName = ({ name, number, filter }, actions) => {
     const matches = this.compareContacts(name);
-    const isPassedTest = !matches.length;
-    if (!isPassedTest) {
+    if (matches) {
       NotificationManager.warning(
-        'Сontact with name ' + matches[0].name + ' already saved'
+        'Сontact with name ' + matches.name + ' already saved'
       );
       return;
     }
@@ -53,13 +59,10 @@ export class App extends Component {
     actions.resetForm();
   };
 
-  deleteName = nameVal => {
-    const newContactsList = this.state.contacts.filter(({ name }) => {
-      if (nameVal.toLowerCase().localeCompare(name.toLowerCase()) !== 0) {
-        return true;
-      }
-      return false;
-    });
+  deleteName = deletedId => {
+    const newContactsList = this.state.contacts.filter(
+      ({ id }) => deletedId !== id
+    );
     this.setState({ contacts: newContactsList });
   };
 
@@ -68,8 +71,8 @@ export class App extends Component {
   };
 
   render() {
-    const { contacts, filter } = this.state;
-    const normalizedfilter = filter.toLowerCase();
+    // const { contacts, filter } = this.state;
+    const filtredContacts = this.filterContacts();
     return (
       <>
         <Section title="Phonebook">
@@ -79,8 +82,7 @@ export class App extends Component {
         <Section title="Contacts">
           <Filter handleChange={this.handleChange}></Filter>
           <Contacts
-            contactList={contacts}
-            query={normalizedfilter}
+            contactList={filtredContacts}
             deleteName={this.deleteName}
           ></Contacts>
         </Section>
